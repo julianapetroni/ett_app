@@ -1,0 +1,57 @@
+name: ett_app
+description: A new Flutter application.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_cupertino_localizations: ^1.0.1
+
+  cupertino_icons: ^0.1.2
+
+  json_table:
+  dio: 1.0.0
+  intl:
+  http: any
+  path_provider:
+  autocomplete_textfield: ^1.6.4
+  grouped_listview: ^0.0.2
+  device_info: ^0.3.0
+  camera:
+  image_picker:
+  rflutter_alert: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner:
+  timeline_list: ^0.0.5
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - images/ETT.png
+
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+
+
+
+
+
