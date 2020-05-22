@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ett_app/domains/Agendamento.dart';
-import 'package:ett_app/domains/DataAgendamento.dart';
-import 'package:ett_app/domains/HoraAgendamento.dart';
-import 'package:ett_app/domains/Usuario.dart';
-import 'package:ett_app/domains/solicitacao.dart';
-import 'appBar.dart';
+import 'package:terceiros_app/domains/agendamento.dart';
+import 'package:terceiros_app/domains/dataAgendamento.dart';
+import 'package:terceiros_app/domains/horaAgendamento.dart';
+import 'package:terceiros_app/domains/usuario.dart';
+import 'package:terceiros_app/domains/solicitacao.dart';
+import 'package:terceiros_app/screens/controleFornecedores.dart';
+import 'package:terceiros_app/screens/iniciarSolicitacao.dart';
+import 'agendarData.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
+import 'appBarGT.dart';
 import 'login.dart';
 
 class Status extends StatefulWidget {
@@ -22,7 +25,7 @@ class Status extends StatefulWidget {
   //final String value; // instituição de ensino
   Solicitacao sol;
 
-  Status({Key key, this.user, this.token, @required this.text, this.sol, this.cancelar})
+  Status({Key key, this.user, @required this.token, this.text, this.sol, this.cancelar})
       : assert(user.id != null),
         super(key: key);
 
@@ -39,8 +42,8 @@ class StatusState extends State<Status> {
   String _textoHora = '';
   //data e hora cond 3
 
-  Token token;
   Usuario user;
+  Token token;
   Solicitacao sol;
   StatusState({this.user, this.sol, this.token});
   var botaoValue = '';
@@ -62,7 +65,104 @@ class StatusState extends State<Status> {
   }
 
 
+  _botaoEscolha(int cond) {
+    if (cond == 0 || dataEntregaCartao != null) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 35.0),
+        child: new InkWell(
+          onTap: () {
+            print(user.cidade.estado.sigla);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => IniciarSolicitacao(user: user, token: token)),
+            );
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => IniciarSolicitacao(user: user, token: token)),
+                    (Route<dynamic> route) => false);
+          },
 
+          child: new Container(
+            width: double.infinity,
+            height: 50.0,
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              gradient: LinearGradient(
+                colors: <Color>[
+                  Colors.blue[800],
+                  Colors.blue[600],
+                  Colors.blue[400],
+                ],
+              ),
+            ),
+            child: new Center(
+              child: Row(
+                children: <Widget>[
+                  Spacer(
+                    flex: 3,
+                  ),
+                  const Text('NOVOS DOCUMENTOS',
+                      style: TextStyle(fontSize: 20, color: Colors.white)),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  Icon(Icons.chevron_right, color: Colors.white),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    else if(cond == 1){
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 35.0),
+        child: new InkWell(
+          onTap: () {
+            print(user.cidade.estado.sigla);
+            print(sol);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AgendarData(sol: sol, user: user, token: token)),
+            );
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => AgendarData(sol: sol, user: user, token: token)),
+                    (Route<dynamic> route) => false);
+          },
+
+          child: new Container(
+            width: double.infinity,
+            height: 50.0,
+            decoration: new BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              gradient: LinearGradient(
+                colors: <Color>[
+                  Color(0xFF33691E),
+                  Color(0xFF689F38),
+                  Color(0xFF8BC34A),
+                ],
+              ),
+            ),
+            child: new Center(
+              child: Row(
+                children: <Widget>[
+                  Spacer(
+                    flex: 3,
+                  ),
+                  const Text('AGENDAR',
+                      style: TextStyle(fontSize: 20, color: Colors.white)),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  Icon(Icons.chevron_right, color: Colors.white),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+  }
   void printWrapped(String text) {
     final pattern = new RegExp('.{1,800}'); // 800 is the size of each chunk
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
@@ -77,14 +177,128 @@ class StatusState extends State<Status> {
         .get(url,
         headers: {
           'Authorization':
-          'bearer d16e3966-eb87-4337-bfee-bee54b5a4052'
+          'bearer ' + token.access_token.toString()
         })
         .then((http.Response res) {
       print("Response statuss: ${res.statusCode}");
       //print(res.headers);
+      printWrapped("BODY: "+res.body);
       print(user.email);
       print(user.id);
+      if(res.body == '' || res.body.contains('{\"id\":null,\"instituicao\":null,\"tipoSolicitacao\":null'))
+      {
+        print("sem nada");
+        if(mounted) {
+          setState(() {
+            cond = 0;
+          });
+        }
+        //botao inciar solicitação ativo para inciar nova solicitacao
+      }
+      else {
+        Map<String, dynamic> map = jsonDecode(res.body);
+        sol = Solicitacao.fromJson(map);
+//        if(sol.id == 'null'){
+//          print("sem nada");
+//          if(mounted) {
+//            setState(() {
+//              cond = 0;
+//            });
+//          }
+//        }
 
+        if(mounted) {
+          setState(() {
+            diaHora = sol.data;
+            dataProducaoCartao = sol.dataProducaoCartao;
+            dataParaRetirada = sol.dataParaRetirada;
+            dataEntregaCartao = sol.dataEntregaCartao;
+            _textoData = sol.dataAgendamento;
+            _textoHora = sol.horarioReservado;
+            statusSolicitacao = sol.statusSolicitacao;
+            motivoRejeicao = sol.motivoRejeicao;
+          });
+
+        }
+
+
+
+        //var list = json.decode((res.body)) as List;
+        //Iterable i = json.decode((res.body));
+//        List<Solicitacao> teste = list.map((i) => Solicitacao.fromJson(i)).toList();
+        //print(sol.statusSolicitacao.toString() + "enzo");
+
+        if(statusSolicitacao == 'ACEITA'){
+          //print("deveriaMUDAAAAAAAAAAAAAAR");
+          if(mounted){
+            setState((){
+              cond = 1;
+            });
+          }
+//          setState(() {
+//            cond = 1;
+//          });
+
+          //ir para agendamento
+        }
+        else if(statusSolicitacao == 'INICIADA'){
+          //consulta na propria tela
+          if(mounted) {
+            setState(() {
+              cond = 2;
+            });
+          }
+        }
+        else if(statusSolicitacao == 'AGENDADA'){
+          //consulta na propria tela
+          print("AGENDADO!!");
+          if(mounted){
+            setState((){
+              cond = 3;
+            });
+          }
+        }
+//        else if(dataProducaoCartao != null){
+//          //consulta na propria tela
+//          print("CARTÃO PRODUZIDO!!");
+//          if(mounted){
+//            setState((){
+//              cond = 4;
+//            });
+//          }
+//        }
+//        else if(dataParaRetirada != null){
+//          //consulta na propria tela
+//          print("CARTÃO PARA RETIRADA!!");
+//          if(mounted){
+//            setState((){
+//              cond = 5;
+//            });
+//          }
+//        }
+        else if(dataEntregaCartao != null){
+          //pode pedir novo cartão
+          print("CARTÃO ENTREGUE!!");
+          if(mounted){
+            setState((){
+              cond = 6;
+            });
+          }
+        }
+        else if(statusSolicitacao == 'NEGADA' || (statusSolicitacao == 'APROVADA' && dataEntregaCartao != null)) {
+          print(dataEntregaCartao.toString());
+          //botao inciar solicitação ativo para inciar nova solicitacao
+
+          if(mounted){
+            setState(() {
+              cond = 0;
+            });
+          }
+
+        }
+//apagar
+//        cond = 0;
+      }
     });
   }
 
@@ -154,6 +368,11 @@ class StatusState extends State<Status> {
       else {
         var textoDtAg3 = '';
         var textoDtAg = _textoData;
+        print("DATAAAA: " + _textoData.toString());
+//        if (textoDtAg.contains('T') == false){
+//          print(_textoData);
+//          textoDtAg == '--T';
+//      }
         var textoDtAg1 = textoDtAg.split("T");
         var textoDtAg2 = textoDtAg1[0].split("-");
         textoDtAg3 =
@@ -304,7 +523,7 @@ class StatusState extends State<Status> {
     }
 
     Widget _dataEntregaCartao() {
-      if (dataEntregaCartao == null) {
+      if (dataEntregaCartao == null || cond == 0) {
         return Icon(
           Icons.access_time,
           color: Colors.grey[700],
@@ -336,7 +555,7 @@ class StatusState extends State<Status> {
     }
 
     Widget _checkBoxdataEntregaCartao() {
-      if (dataEntregaCartao == null) {
+      if (dataEntregaCartao == null || cond == 0) {
         return Icon(
           Icons.check_box_outline_blank,
           color: Colors.grey[700],
@@ -394,19 +613,9 @@ class StatusState extends State<Status> {
 
     return Scaffold(
         appBar: AppBarPEC(
-          title: Row(
-            children: <Widget>[
-              Spacer(flex: 2),
-              Container(
-                  height: 45.0,
-                  child: Image(image: AssetImage('images/ETT.png'))),
-              Spacer(flex: 2),
-              Container(child: Icon(Icons.person),),
-              SizedBox(width: 5.0,)
-            ],
-          ),
+          title: Text(' '),
         ),
-        drawer: MyDrawer(user: user),
+        endDrawer: MyDrawer(user: user, token: token),
         backgroundColor: Colors.white,
         body:  SafeArea(
           child: Padding(
@@ -417,6 +626,74 @@ class StatusState extends State<Status> {
               child: Column(
                 children: <Widget>[
 
+//                   Flexible(
+//                    flex: 1,
+//                    child: Container(
+//                      width: double.infinity,
+//                      child: Padding(
+//                        padding: const EdgeInsets.fromLTRB(30, 30, 30, 10),
+//                        child: Center(
+//                          child: Row(
+//                            mainAxisAlignment: MainAxisAlignment.center,
+//                            children: <Widget>[
+//                              Image(
+//                                image: AssetImage('images/PECLogo.png'),
+//                              ),
+//                            ],
+//                           ),
+//                          ),
+//                        ),
+//                      ),
+//                    ),
+//                    Flexible(
+//                      flex: 0,
+//                      child: Column(
+//                        children: <Widget>[
+//                          Padding(
+//                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+//                            child: Container(
+//                                alignment: Alignment.center,
+//                                height: 65.0,
+//                                width: double.infinity,
+//                                child: Row(
+//                                  mainAxisAlignment: MainAxisAlignment.center,
+//                                  crossAxisAlignment: CrossAxisAlignment.center,
+//                                  children: <Widget>[
+//                                    Padding(
+//                                      padding: const EdgeInsets.only(
+//                                          left: 10.0, top: 10.0),
+//                                      child: Icon(
+//                                        Icons.hourglass_empty,
+//                                        color: Colors.green,
+//                                        size: 22.0,
+//                                      ),
+//                                    ),
+//                                    SizedBox(
+//                                      width: 20.0,
+//                                    ),
+//                                    Container(
+//                                      width: title_width,
+//                                      child: Padding(
+//                                        padding: const EdgeInsets.only(top: 10.0),
+//                                        child: Text(
+//                                          'Documentos em análise',
+//                                          style: TextStyle(
+//                                              fontSize: 22.0,
+//                                              color: Colors.green,
+//                                              fontFamily: "Poppins-Bold",
+//                                              letterSpacing: .6),
+//                                        ),
+//                                      ),
+//                                    ),
+//                                  ],
+//                                )
+////                              ],
+////                            ),
+//                              //        )
+//                            ),
+//                          ),
+//                        ],
+//                      )),
                   Flexible(
                       flex: 4,
                       child: Container(
@@ -424,20 +701,263 @@ class StatusState extends State<Status> {
                           child: ListView(
                             padding: const EdgeInsets.only(top: 10.0, bottom: 20.0),
                             children: <Widget>[
+                              Container(
+                                height: title_height,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 30.0),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image(
+                                          image: AssetImage('images/AccioLogo.png'),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 20.0, left: 20.0, right: 20.0),
+                                child: Container(
+                                    alignment: Alignment.center,
+                                    height: 85.0,
+                                    width: title_width,
+                                    child: Center(
+                                      child: ListTile(
+                                        title: Text(
+                                            'Documentos em análise',
+                                            style: TextStyle(
+                                                fontSize: 22.0,
+                                                color: Colors.grey[700],
+                                                fontFamily: "Poppins-Bold",
+                                                letterSpacing: .6)),
+                                        leading: Icon(
+                                          Icons.hourglass_empty,
+                                          color: Colors.grey[700],
+                                          size: 22.0,
+                                        ),
+                                      ),
+                                    )
 
+                                  //        )
+                                ),
+                              ),
 
+                              Column(
+                                //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10.0, 0.0, 0.0, 0.0),
+                                        child: _checkBoxAgendamento(),
+                                      ),
+                                      SizedBox(
+                                        width: 10.0,
+                                      ),
+                                      Container(
+                                        width: a_width,
+                                        child: Text(
+                                          'Envio dos documentos',
+                                          style: TextStyle(
+                                              color: Colors.grey[700], fontSize: 18.0),
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Container(
+                                        width: b_width,
+                                        child: _dataAgendamento(),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 30.0,),
 
+                                  Visibility(
+                                    visible: _isVisible,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10.0, 0.0, 0.0, 0.0),
+                                          child: _checkBoxEntrevista(),
+                                        ),
+                                        SizedBox(
+                                          width: 10.0,
+                                        ),
+                                        Container(
+                                          width: a_width,
+                                          child: Text(
+                                            'Documentos em análise',
+                                            style: TextStyle(
+                                                color: Colors.grey[700], fontSize: 18.0),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          width: b_width,
+                                          child: _dataEntrevista(),
+                                        )],
+                                    ),
+                                  ),
+                                  Visibility(
+                                      visible: _isVisible,
+                                      child: SizedBox(height: 30.0,)),
+//                                  Visibility(
+//                                    visible: _isVisible,
+//                                    child: Row(
+//                                      children: <Widget>[
+//                                        Padding(
+//                                          padding: const EdgeInsets.fromLTRB(
+//                                              10.0, 0.0, 0.0, 0.0),
+//                                          child: _checkBoxdataProducaoCartao(),
+//                                        ),
+//                                        SizedBox(
+//                                          width: 10.0,
+//                                        ),
+//                                        Container(
+//                                          width: a_width,
+//                                          child: Text(
+//                                            'Produção do cartão',
+//                                            style: TextStyle(
+//                                                color: Colors.grey[700], fontSize: 18.0),
+//                                          ),
+//                                        ),
+//                                        Spacer(),
+//                                        Container(
+//                                          width: b_width,
+//                                          child: _dataProducaoCartao(),
+//                                        )
+//                                      ],
+//                                    ),
+//                                  ),
+//                                  Visibility(
+//                                      visible: _isVisible,
+//                                      child: SizedBox(height: 30.0,)),
+//                                  Visibility(
+//                                    visible: _isVisible,
+//                                    child: Row(
+//                                      children: <Widget>[
+//                                        Padding(
+//                                          padding: const EdgeInsets.fromLTRB(
+//                                              10.0, 0.0, 0.0, 0.0),
+//                                          child: _checkBoxdataParaRetirada(),
+//                                        ),
+//                                        SizedBox(
+//                                          width: 10.0,
+//                                        ),
+//                                        Container(
+//                                          width: a_width,
+//                                          child: Text(
+//                                            'Pronto para retirada',
+//                                            style: TextStyle(
+//                                                color: Colors.grey[700], fontSize: 18.0),
+//                                          ),
+//                                        ),
+//                                        Spacer(),
+//                                        Container(
+//                                          width: b_width,
+//                                          child: _dataParaRetirada(),
+//                                        )
+//                                      ],
+//                                    ),
+//                                  ),
+//                                  Visibility(
+//                                      visible: _isVisible,
+//                                      child: SizedBox(height: 30.0,)),
+                                  Visibility(
+                                    visible: _isVisible,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              10.0, 0.0, 0.0, 0.0),
+                                          child: _checkBoxdataEntregaCartao(),
+                                        ),
+                                        SizedBox(
+                                          width: 10.0,
+                                        ),
+                                        Container(
+                                          width: a_width,
+                                          child: Text(
+                                            'Documentos aceitos',
+                                            style: TextStyle(
+                                                color: Colors.grey[700], fontSize: 18.0),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Container(
+                                          width: b_width,
+                                          child: _dataEntregaCartao(),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Visibility(
+                                      visible: _motivoRejeicao,
+                                      child: Container(
+                                        //width: title_width,
+                                        color: Colors.grey[100],
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: Column(
+                                                children: <Widget>[
+                                                  SizedBox(height: 20.0,),
+                                                  Center(
+                                                      child: new Icon(Icons.error, size: 50.0, color: Colors.red,)),
+                                                  SizedBox(height: 20.0,),
+                                                  new Text('Atenção!', style: TextStyle(
+                                                      fontSize: 16.0,
+                                                      color: Colors.red[600],
+                                                      fontFamily: "Poppins-Bold",
+                                                      letterSpacing: .6),
+                                                  ),
+                                                  SizedBox(height: 20.0,),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: new Text('Motivo da rejeição: ${motivoRejeicao}',
+                                                      textAlign: TextAlign.justify,
+                                                      style: TextStyle(
+                                                          fontSize: 16.0,
+                                                          color: Colors.grey[600],
+                                                          fontFamily: "Poppins-Bold",
+
+                                                          letterSpacing: .6),
+                                                    ),
+                                                  ),
+
+                                                  SizedBox(height: 20.0,),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ))
+                                ],
+                              ),
                             ],
                           ))),
                   SizedBox(
                     height: 20,
                   ),
+                  FlatButton(onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ControleFornecedores(user: user, token: token)),
+                    );
+                  }, child: Icon(Icons.home))
                 ],
               ),
             ),
           ),
         ),
-
+        bottomNavigationBar: _botaoEscolha(cond)
     );
   }
 }

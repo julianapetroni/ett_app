@@ -1,13 +1,17 @@
 import 'dart:convert';
 
-import 'package:ett_app/domains/Cidade.dart';
-import 'package:ett_app/domains/Estado.dart';
-import 'package:ett_app/domains/Perfil.dart';
+import 'package:terceiros_app/domains/cidade.dart';
+import 'package:terceiros_app/domains/estado.dart';
+import 'package:terceiros_app/domains/perfil.dart';
 
 class Usuario {
   int id;
   String nome;
+  String nomeFantasia;
+  String complR;
   String cpf;
+  String cnpj;
+  String numFunc;
   String endereco;
   String complemento;
   String bairro;
@@ -23,13 +27,17 @@ class Usuario {
   String resetSenha;//= "N";
 
 
-  Usuario({this.id, this.nome, this.cpf, this.endereco, this.complemento, this.bairro, this.cidade, this.estado, this.cep, this.contato, this.email ,this.observacao, this.perfil, this.status, this.senha, this.resetSenha});
+  Usuario({this.id, this.nome, this.nomeFantasia, this.complR, this.cpf, this.cnpj, this.numFunc, this.endereco, this.complemento, this.bairro, this.cidade, this.estado, this.cep, this.contato, this.email ,this.observacao, this.perfil, this.status, this.senha, this.resetSenha});
 
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
       id: json['id'],
       nome: json['nome'],
+      nomeFantasia: json['nomeFantasia'],
+      complR: json['complR'],
       cpf: json['cpf'],
+      cnpj: json['cnpj'],
+      numFunc: json['numFunc'],
       endereco: json['endereco'],
       complemento: json['complemento'],
       bairro: json['bairro'],
@@ -50,7 +58,11 @@ class Usuario {
   Map<String, dynamic> toJson() => {
     'id': id,
     'nome': nome,
+    'nomeFantasia': nomeFantasia,
+    'complR': complR,
     'cpf': cpf,
+    'cnpj': cnpj,
+    'numFunc': numFunc,
     'endereco': endereco,
     'complemento': complemento,
     'bairro': bairro,

@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ett_app/models/forms.dart';
-import 'package:ett_app/screens/login.dart';
-import 'package:ett_app/screens/sizeConfig.dart';
-import 'package:ett_app/utils/validators.dart';
+import 'package:terceiros_app/domains/usuario.dart';
+import 'package:terceiros_app/models/forms.dart';
+import 'package:terceiros_app/screens/login.dart';
+import 'package:terceiros_app/screens/sizeConfig.dart';
+import 'package:terceiros_app/utils/validators.dart';
 import 'package:http/http.dart' as http;
 
 class EsqueceuSenha extends StatefulWidget {
@@ -16,7 +17,6 @@ class EsqueceuSenha extends StatefulWidget {
 }
 
 class EsqueceuSenhaState extends State<EsqueceuSenha> {
-  List<dynamic> _docs = [];
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -30,23 +30,9 @@ class EsqueceuSenhaState extends State<EsqueceuSenha> {
 
   final _emailController = TextEditingController();
 
-  void _fetchDocs() {
-    http
-        .get(
-        "https://www.accio.com.br:447/api/v1/usuarios/?access_token=d16e3966-eb87-4337-bfee-bee54b5a4052")
-        .then((res) {
-      final docs = json.decode(res.body);
-
-      setState(() {
-        _docs = docs;
-      });
-    });
-  }
-
   @override
   initState() {
     super.initState();
-    _fetchDocs();
   }
 
   @override
@@ -112,7 +98,7 @@ class EsqueceuSenhaState extends State<EsqueceuSenha> {
                         Container(
                           width: SizeConfig.safeBlockVertical * 30,
                           child: Image(
-                            image: AssetImage('images/PECLogo.png'),
+                            image: AssetImage('images/AccioLogo.png'),
                           ),
                         ),
                       ],
@@ -159,7 +145,7 @@ class EsqueceuSenhaState extends State<EsqueceuSenha> {
                                 child: Text("Digite o seu e-mail cadastrado:",
                                     style: TextStyle(
                                         fontSize: 22.0,
-                                        color: Colors.yellow[800],
+                                        color: Colors.grey[800],
                                         fontFamily: "Poppins-Bold",
                                         letterSpacing: .6)),
                               ),
@@ -230,11 +216,28 @@ class EsqueceuSenhaState extends State<EsqueceuSenha> {
                     onPressed: () {
                       _submit();
 
-                      bool flag = false;
-                      for (int c = 0; c < _docs.length; c++) {
-                        print(c);
-                        if (_docs[c]['email'] == _emailController.text) {
-                          flag = true;
+                      Usuario user = new Usuario.vazio();
+//                      print("sss" + _loginData.email.toString());
+                      user.email = _loginData.email.toString();
+                      Map<String, dynamic> map = user.toJson();
+                      String body = jsonEncode(map);
+                      String url = 'https://www.accio.com.br:447/api/senhas/change/password';
+
+                      http
+                          .put(url,
+                      headers: {
+//                      'Content-Type':
+//                      'application/x-www-form-urlencoded; charset=utf-8',
+                        'Content-Type':
+                        'application/json;charset=UTF-8',
+                      },
+                      body: body)
+                          .then((http.Response res) {
+                        print("Response status: ${res.statusCode}");
+                        print(res.headers);
+
+                        print(res.body);
+                        if (res.statusCode == 200) {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -262,29 +265,35 @@ class EsqueceuSenhaState extends State<EsqueceuSenha> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                          builder: (context) => TelaLogin()));
-
+                                              builder: (context) =>
+                                                  TelaLogin()));
                                     },
                                   ),
                                 ],
                               );
                             },
                           );
-
-
-
                         }
+                        else {
+                          final snackBar = new SnackBar(
+                              content:
+                              new Text('Erro na autenticação'));
+                          _scaffoldKey.currentState.showSnackBar(snackBar);
+                        }
+                      });
 
-                      }
-                      if(flag == false){
-                        final snackBar = new SnackBar(
-                            content:
-                            new Text('Erro na autenticação'));
-                        _scaffoldKey.currentState.showSnackBar(snackBar);
-                        //print(_passwordController.text.toString());
-                      }
+//                      if(flag == false){
+//                        final snackBar = new SnackBar(
+//                            content:
+//                            new Text('Erro na autenticação'));
+//                        _scaffoldKey.currentState.showSnackBar(snackBar);
+//                        //print(_passwordController.text.toString());
+//                      }
 
                     },
+
+
+
 
 
                     textColor: Colors.white,
@@ -296,9 +305,9 @@ class EsqueceuSenhaState extends State<EsqueceuSenha> {
                         borderRadius: BorderRadius.circular(15.0),
                         gradient: LinearGradient(
                           colors: <Color>[
-                            Colors.yellow[800],
-                            Colors.yellow[700],
-                            Colors.yellow[600],
+                            Colors.blue[800],
+                            Colors.blue[600],
+                            Colors.blue[400],
                           ],
                         ),
                       ),

@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:ett_app/domains/Cidade.dart';
-import 'package:ett_app/domains/Instituicao.dart';
-import 'package:ett_app/domains/TipoSolicitacao.dart';
-import 'package:ett_app/domains/Usuario.dart';
+import 'package:terceiros_app/domains/cidade.dart';
+import 'package:terceiros_app/domains/instituicao.dart';
+import 'package:terceiros_app/domains/tipoSolicitacao.dart';
+import 'package:terceiros_app/domains/usuario.dart';
 
 class Solicitacao {
   int id;
@@ -12,8 +12,10 @@ class Solicitacao {
   Usuario cliente;
   Cidade cidade;
   String cpf;
+  String cnpj;
   String rg;
   String rgAcompanhante; //*
+  String numFunc;
   String comprovanteEndereco;
   String declaracaoEscolar;
   String declaracaoRenda1;
@@ -45,6 +47,8 @@ class Solicitacao {
   String dataAgendamento;
   String horaAgendamento;
   String horarioReservado;
+  String ie;
+  String im;
 
   //Array<Documento> documentos;
   String motivoRejeicao;
@@ -52,7 +56,7 @@ class Solicitacao {
   String status;
 
   Solicitacao(
-      {this.id, this.instituicao, this.tipoSolicitacao, this.cliente, this.cidade, this.cpf, this.rg, this.rgAcompanhante, this.comprovanteEndereco, this.declaracaoEscolar, this.declaracaoRenda1, this.declaracaoRenda2, this.declaracaoRenda3, this.declaracaoRenda4, this.declaracaoMedica, this.declaracaoMedica1, this.declaracaoMedica2, this.declaracaoMedica3, this.laudoMedicoOrgaoPublico, this.cartaoSusFrente, this.cartaoSusVerso, this.bolsista, this.comprovanteBolsistaFiesPagina1, this.comprovanteBolsistaFiesPagina2, this.comprovanteBolsistaFiesPagina3, this.comprovanteBolsistaProuniPagina1, this.comprovanteBolsistaProuniPagina2, this.comprovanteBolsistaProuniPagina3, this.comprovanteRevalidacao, this.fichaFrequencia, this.numeroCartao, this.statusSolicitacao, this.dataProducaoCartao, this.dataParaRetirada, this.dataEntregaCartao, this.motivoRejeicao, this.data, this.status, this.horaAgendamento, this.dataAgendamento, this.horarioReservado});
+      {this.id, this.instituicao, this.tipoSolicitacao, this.cliente, this.cidade, this.cpf, this.cnpj, this.rg, this.rgAcompanhante, this.numFunc, this.comprovanteEndereco, this.declaracaoEscolar, this.declaracaoRenda1, this.declaracaoRenda2, this.declaracaoRenda3, this.declaracaoRenda4, this.declaracaoMedica, this.declaracaoMedica1, this.declaracaoMedica2, this.declaracaoMedica3, this.laudoMedicoOrgaoPublico, this.cartaoSusFrente, this.cartaoSusVerso, this.bolsista, this.comprovanteBolsistaFiesPagina1, this.comprovanteBolsistaFiesPagina2, this.comprovanteBolsistaFiesPagina3, this.comprovanteBolsistaProuniPagina1, this.comprovanteBolsistaProuniPagina2, this.comprovanteBolsistaProuniPagina3, this.comprovanteRevalidacao, this.fichaFrequencia, this.numeroCartao, this.statusSolicitacao, this.dataProducaoCartao, this.dataParaRetirada, this.dataEntregaCartao, this.motivoRejeicao, this.data, this.status, this.horaAgendamento, this.ie, this.im, this.dataAgendamento, this.horarioReservado});
 
   factory Solicitacao.fromJson(Map<String, dynamic> json) {
     return Solicitacao(
@@ -62,8 +66,10 @@ class Solicitacao {
       cliente: Usuario.fromJson(json['cliente']),
       cidade: Cidade.fromJson(json['cidade']),
       cpf: json['cpf'],
+      cnpj: json['cnpj'],
       rg: json['rg'],
       rgAcompanhante: json['rgAcompanhante'],
+      numFunc: json['numFunc'],
       comprovanteEndereco: json['comprovanteEndereco'],
       declaracaoEscolar: json['declaracaoEscolar'],
       declaracaoRenda1: json['declaracaoRenda1'],
@@ -94,6 +100,7 @@ class Solicitacao {
       dataAgendamento: json['dataAgendamento'],
       horaAgendamento: json['horaAgendamento'],
       horarioReservado: json['horarioReservado'],
+      ie: json['ie'],
       motivoRejeicao: json['motivoRejeicao'],
       data: json['data'],
       status: json['status'],
@@ -110,6 +117,7 @@ class Solicitacao {
         'cliente': cliente,
         'cidade': cidade,
         'cpf': cpf,
+        'cnpj': cnpj,
         'rg': rg,
         'rgAcompanhante': rgAcompanhante,
         'comprovanteEndereco': comprovanteEndereco,
@@ -142,6 +150,8 @@ class Solicitacao {
         'dataAgendamento': dataAgendamento,
         'horaAgendamento': horaAgendamento,
         'horarioReservado': horarioReservado,
+        'ie': ie,
+        'im': im,
         'motivoRejeicao': motivoRejeicao,
         'data': data,
         'status': status,

@@ -1,6 +1,6 @@
 String emailValidator(String value, String field) {
   final regex = RegExp(
-    //r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+      //r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
       "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
           "\\@" +
           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
@@ -28,6 +28,36 @@ String cpfValidator(String value, String field) {
   final regex = RegExp("[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}");
   final hasMatch = regex.hasMatch(value);
   return hasMatch ? null : 'Digite um CPF válido!';
+}
+
+String cnpjValidator(String value, String field) {
+  final regex = RegExp("[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}");
+  final hasMatch = regex.hasMatch(value);
+  return hasMatch ? null : 'Digite um CNPJ válido!';
+}
+
+String ieValidator(String value, String field) {
+  final regex = RegExp("^(?:isento)|(?:([0-9]{2}\.?[0-9]{3}\.?[0-9]{4}\-?[0-9]{1}))",
+    caseSensitive: false,
+  );
+  final hasMatch = regex.hasMatch(value);
+  return hasMatch ? null : 'Digite uma Inscrição Estadual válida ou digite \"ISENTO\"!';
+}
+
+String imValidator(String value, String field) {
+  final regex = RegExp("^(?:isento)|(?:([0-9]{5}))",
+    caseSensitive: false,
+  );
+  final hasMatch = regex.hasMatch(value);
+  return hasMatch ? null : 'Digite uma Inscrição Municipal válida ou digite \"ISENTO\"!';
+}
+
+String numFuncValidator(String value, String field) {
+  final regex = RegExp("([0-9]{1})",
+    caseSensitive: false,
+  );
+  final hasMatch = regex.hasMatch(value);
+  return hasMatch ? null : 'Digite o número de funcionários!';
 }
 
 String rgValidator(String value, String field) {

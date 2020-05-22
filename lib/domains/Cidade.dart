@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ett_app/domains/Estado.dart';
+import 'package:terceiros_app/domains/estado.dart';
 
 class Cidade {
 

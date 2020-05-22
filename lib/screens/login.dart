@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:ett_app/domains/HoraAgendamento.dart';
-import 'package:ett_app/domains/Usuario.dart';
-import 'package:ett_app/models/forms.dart';
-import 'package:ett_app/screens/dadosCadastro.dart';
-import 'package:ett_app/screens/esqueceuSenha.dart';
-import 'package:ett_app/screens/sizeConfig.dart';
-import 'package:ett_app/screens/status.dart';
-import 'package:ett_app/services/auth_api_service.dart';
-import 'package:ett_app/utils/validators.dart';
+import 'package:terceiros_app/domains/horaAgendamento.dart';
+import 'package:terceiros_app/domains/usuario.dart';
+import 'package:terceiros_app/models/forms.dart';
+import 'package:terceiros_app/screens/agendarData.dart';
+import 'package:terceiros_app/screens/dadosCadastro.dart';
+import 'package:terceiros_app/screens/esqueceuSenha.dart';
+import 'package:terceiros_app/screens/sizeConfig.dart';
+import 'package:terceiros_app/screens/status.dart';
+import 'package:terceiros_app/services/auth_api_service.dart';
+import 'package:terceiros_app/utils/validators.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/date_symbol_data_file.dart';
@@ -47,7 +48,8 @@ class _TelaLoginState extends State<TelaLogin> {
   _makePostRequest(String user, String password) async {
     // set up POST request arguments
     String url =
-        'http://179.190.40.41:443/api/uaa/oauth/token?username=$user&password=$password&grant_type=password';
+        'https://www.accio.com.br:447/api/uaa/oauth/token?username=$user&password=$password&grant_type=password';
+        //'http://179.190.40.41:443/api/uaa/oauth/token?username=$user&password=$password&grant_type=password';
     //Map<String, String> headers = {"Content-type": "application/json", "Authorization": "Basic YWV0dXItYXBwLWNsaWVudDphZXR1ci1hcHAtc2VjcmV0"};
     //String json = '{"title": "Hello", "body": "body text", "userId": 1}';
     // make POST request
@@ -82,22 +84,39 @@ class _TelaLoginState extends State<TelaLogin> {
         Map<String, dynamic> map = jsonDecode(response.body);
         Token token = Token.fromJson(map);
         print(token.access_token);
-        String url2 = 'http://179.190.40.41:443/api/v1/usuarios/userinfo';
+        String url2 = 'https://www.accio.com.br:447/api/v1/usuarios/userinfo';
         http
             .get(url2,
-            headers: {
-              'Authorization':
-              'bearer ' + token.access_token.toString()
-            }).then((res) {
+          headers: {
+          'Authorization':
+          'bearer ' + token.access_token.toString()
+        }).then((res) {
+          //Perfil decode
 
+//          map = jsonDecode(res.body);
+//          Perfil perfil = Perfil.fromJson(map);
+//          print(perfil.id);
+
+          //Estado decode
+
+//          Estado estado = Estado.fromJson(map);
+//          print(estado);
+
+          //Cidade decode
+
+//          Cidade cidade = Cidade.fromJson(map);
+//          print(cidade.estado.nome);
+
+          //print(res.body);
           Map<String, dynamic> map2 = jsonDecode(res.body);
 
           Usuario usuario = Usuario.fromJson(map2);
 
+          print(usuario.cidade.estado.nome);
           print("ID: " + usuario.id.toString());
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => Status(user: usuario, token: token)),
+            MaterialPageRoute(builder: (context) => Status(user: usuario, token : token)),
 //            MaterialPageRoute(builder: (context) => AgendarData()),
           );
           Navigator.of(context).pushAndRemoveUntil(
@@ -152,11 +171,11 @@ class _TelaLoginState extends State<TelaLogin> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-//      widget.authApi.login(_loginData).then((data) {
-//        print(data);
-//      });
-////      print(
-////          'password is: ${_loginData.password}, email is: ${_loginData.email}');
+      widget.authApi.login(_loginData).then((data) {
+        print(data);
+      });
+//      print(
+//          'password is: ${_loginData.password}, email is: ${_loginData.email}');
     } else {
       setState(() => _autovalidate = true);
     }
@@ -196,7 +215,6 @@ class _TelaLoginState extends State<TelaLogin> {
     SizeConfig().init(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       key: _scaffoldKey,
       body: SafeArea(
 
@@ -206,17 +224,35 @@ class _TelaLoginState extends State<TelaLogin> {
 
             slivers: <Widget>[
 
-              SliverAppBar(
-                //pinned: true,
-                expandedHeight: SizeConfig.safeBlockVertical * 40,
-                backgroundColor: Colors.transparent,
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: EdgeInsets.zero,
-                  centerTitle: true,
 
-                  background: Image.asset("images/ETT.png", fit: BoxFit.contain),
+            SliverAppBar(
+            //pinned: true,
+            expandedHeight: SizeConfig.safeBlockVertical * 30,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.zero,
+              centerTitle: true,
+//              title: Column(
+//                mainAxisAlignment: MainAxisAlignment.center,
+//                children: <Widget>[
+//                  Flexible(
+//                    flex: 3,
+//                    child: Container(),
+//                  ),
+//                  Flexible(
+//                    flex: 1,
+//                    child:
+//                    Text(" ", textAlign: TextAlign.center),
+//                  ),
+//                  Flexible(
+//                    flex: 1,
+//                    child: Container(),
+//                  ),
+//                ],
+//              ),
+              background: Image.asset("images/AccioLogo.png", fit: BoxFit.fill),
 
-                ),),
+            ),),
 
               SliverFixedExtentList(
                 itemExtent: 380,
@@ -257,9 +293,23 @@ class _TelaLoginState extends State<TelaLogin> {
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
-//                                          SizedBox(
-//                                            height: 0.0,
-//                                          ),
+                                          Padding(
+                                            padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text("Login",
+                                                    style: TextStyle(
+                                                        fontSize: 22.0,
+                                                        color: Colors.grey[700],
+                                                        fontFamily: "Poppins-Bold",
+                                                        letterSpacing: .6)),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 30.0,
+                                          ),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 20.0, right: 20.0),
@@ -298,10 +348,14 @@ class _TelaLoginState extends State<TelaLogin> {
                                               onSaved: (value) =>
                                               _loginData.email = value,
                                               decoration: InputDecoration(
+                                                // border: OutlineInputBorder(
+                                                //     borderRadius: BorderRadius.circular(5.0)),
+                                                //labelText: 'E-mail',
+                                                //border: InputBorder.none,
                                                   hintText: 'nome@email.com.br'),
                                             ),
                                           ),
-                                          SizedBox(height: 20.0),
+                                          SizedBox(height: 10.0),
                                           Padding(
                                             padding: const EdgeInsets.only(
                                                 left: 20.0, right: 20.0),
@@ -345,15 +399,20 @@ class _TelaLoginState extends State<TelaLogin> {
                                               onSaved: (value) =>
                                               _loginData.password = value,
                                               decoration: InputDecoration(
+                                                //border: OutlineInputBorder(
+                                                // borderRadius: BorderRadius.circular(5.0)),
+                                                //labelText: 'E-mail',
+                                                //border: InputBorder.none,
                                                   hintText: '******'),
                                               obscureText: _obscureText,
                                             ),
                                           ),
-                                          SizedBox(height: 30.0),
+                                          SizedBox(height: 20.0),
                                           Row(
                                             mainAxisAlignment:
                                             MainAxisAlignment.center,
                                             children: <Widget>[
+//
                                               GestureDetector(
                                                 onTap: () {
                                                   setState(() {
@@ -491,23 +550,15 @@ class _TelaLoginState extends State<TelaLogin> {
                                   borderRadius: BorderRadius.circular(15.0),
                                   gradient: LinearGradient(
                                     colors: <Color>[
-                                      Colors.yellow[800],
-                                      Colors.yellow[700],
-                                      Colors.yellow[600],
+                                      Colors.blue[800],
+                                      Colors.blue[600],
+                                      Colors.blue[400],
                                     ],
                                   ),
                                 ),
                                 child: Center(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Spacer(flex: 1),
-                                        Icon(Icons.person),
-                                        Spacer(flex: 2),
-                                        const Text('ENTRAR',
-                                            style: TextStyle(fontSize: 20)),
-                                        Spacer(flex: 3),
-                                      ],
-                                    )),
+                                    child: const Text('ACESSAR',
+                                        style: TextStyle(fontSize: 20))),
                               ),
                             ),
                           ],

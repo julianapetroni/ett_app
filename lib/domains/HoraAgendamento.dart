@@ -1,4 +1,4 @@
-import 'package:ett_app/domains/DataAgendamento.dart';
+import 'package:terceiros_app/domains/dataAgendamento.dart';
 
 class HoraAgendamento {
   int id;

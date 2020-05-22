@@ -1,22 +1,34 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ett_app/screens/login.dart';
-import 'package:ett_app/domains/Estado.dart';
-import 'package:ett_app/domains/Perfil.dart';
-import 'package:ett_app/domains/Usuario.dart';
-import 'package:ett_app/domains/Cidade.dart';
-import 'package:ett_app/models/forms.dart';
-import 'package:ett_app/screens/termosDeUso.dart';
-import 'package:ett_app/utils/validators.dart';
+import 'package:terceiros_app/screens/login.dart';
+import 'package:terceiros_app/domains/estado.dart';
+import 'package:terceiros_app/domains/perfil.dart';
+import 'package:terceiros_app/domains/usuario.dart';
+import 'package:terceiros_app/domains/cidade.dart';
+import 'package:terceiros_app/models/forms.dart';
+import 'package:terceiros_app/screens/termosDeUso.dart';
+import 'package:terceiros_app/utils/validators.dart';
 import 'package:http/http.dart' as http;
 
 class DadosCadastro extends StatefulWidget {
+
+  Token token;
+
+  DadosCadastro(
+      {Key key,
+        this.token})
+      : super(key: key);
+
   @override
-  DadosCadastroState createState() => new DadosCadastroState();
+  DadosCadastroState createState() => new DadosCadastroState(token: token);
 }
 
 class DadosCadastroState extends State<DadosCadastro> {
+
+  Token token;
+
+  DadosCadastroState({this.token});
 
   int idCity;
   int idState;
@@ -51,9 +63,17 @@ class DadosCadastroState extends State<DadosCadastro> {
   GlobalKey<FormFieldState<String>>();
   final GlobalKey<FormFieldState<String>> _nomeKey =
   GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> _rgKey =
+  final GlobalKey<FormFieldState<String>> _nomeFantasiaKey =
   GlobalKey<FormFieldState<String>>();
-  final GlobalKey<FormFieldState<String>> _cpfKey =
+  final GlobalKey<FormFieldState<String>> _complRKey =
+  GlobalKey<FormFieldState<String>>();
+  final GlobalKey<FormFieldState<String>> _ieKey =
+  GlobalKey<FormFieldState<String>>();
+  final GlobalKey<FormFieldState<String>> _imKey =
+  GlobalKey<FormFieldState<String>>();
+  final GlobalKey<FormFieldState<String>> _cnpjKey =
+  GlobalKey<FormFieldState<String>>();
+  final GlobalKey<FormFieldState<String>> _numFuncKey =
   GlobalKey<FormFieldState<String>>();
   final GlobalKey<FormFieldState<String>> _telefoneKey =
   GlobalKey<FormFieldState<String>>();
@@ -73,8 +93,12 @@ class DadosCadastroState extends State<DadosCadastro> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _nomeController = TextEditingController();
-  final _rgController = TextEditingController();
-  final _cpfController = TextEditingController();
+  final _nomeFantasiaController = TextEditingController();
+  final _complRController = TextEditingController();
+  final _ieController = TextEditingController();
+  final _imController = TextEditingController();
+  final _cnpjController = TextEditingController();
+  final _numFuncController = TextEditingController();
   final _telefoneController = TextEditingController();
   final _cepController = TextEditingController();
   final _enderecoController = TextEditingController();
@@ -92,7 +116,7 @@ class DadosCadastroState extends State<DadosCadastro> {
 
 
   Future<String> _getDropDownCidade() async {
-    var res = await http.get('https://www.accio.com.br:447/api/cadastros/cidades/status/ATIVO/?access_token=d16e3966-eb87-4337-bfee-bee54b5a4052');
+    var res = await http.get("https://www.accio.com.br:447/api/cadastros/cidades/status/ATIVO");
     print(res.body);
     return res.body;
   }
@@ -114,7 +138,7 @@ class DadosCadastroState extends State<DadosCadastro> {
   }
 
   Future<String> _getDropDownEstado() async {
-    var res = await http.get('https://www.accio.com.br:447/api/cadastros/estados/status/ATIVO/?access_token=d16e3966-eb87-4337-bfee-bee54b5a4052');
+    var res = await http.get('https://www.accio.com.br:447/api/cadastros/estados/status/ATIVO');
     print(res.body);
     return res.body;
   }
@@ -142,8 +166,8 @@ class DadosCadastroState extends State<DadosCadastro> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _nomeController.dispose();
-    _rgController.dispose();
-    _cpfController.dispose();
+    _ieController.dispose();
+    _cnpjController.dispose();
     _telefoneController.dispose();
     _cepController.dispose();
     _enderecoController.dispose();
@@ -219,7 +243,7 @@ class DadosCadastroState extends State<DadosCadastro> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Image(
-                                          image: AssetImage('images/ETT.png'),
+                                          image: AssetImage('images/AccioLogo.png'),
                                         ),
                                       ],
                                     ),
@@ -231,11 +255,11 @@ class DadosCadastroState extends State<DadosCadastro> {
                                   const EdgeInsets.only(left: 20.0, top: 10.0),
                                   child: Row(
                                     children: <Widget>[
-                                      Text("Cadastro",
+                                      Text("Dados da Empresa",
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               fontSize: 22.0,
-                                              color: Colors.yellow[800],
+                                              color: Colors.grey[800],
                                               fontFamily: "Poppins-Bold",
                                               letterSpacing: .6)),
                                     ],
@@ -252,7 +276,7 @@ class DadosCadastroState extends State<DadosCadastro> {
                                       Row(
                                         children: <Widget>[
                                           Icon(
-                                            Icons.person,
+                                            Icons.perm_identity,
                                             color: Colors.grey[400],
                                             size: 19.0,
                                           ),
@@ -260,7 +284,7 @@ class DadosCadastroState extends State<DadosCadastro> {
                                             width: 10.0,
                                           ),
                                           Text(
-                                            'Nome',
+                                            'Razão Social',
                                             style:
                                             TextStyle(color: Colors.grey[500]),
                                           ),
@@ -268,7 +292,7 @@ class DadosCadastroState extends State<DadosCadastro> {
                                       ),
                                       TextFormField(
                                         key: _nomeKey,
-                                        validator: composeValidators('nome',
+                                        validator: composeValidators('a Razão Social',
                                             [requiredValidator, stringValidator]),
                                         onSaved: (value) => _loginData.nome = value,
                                         decoration: InputDecoration(hintText: ' '),
@@ -276,38 +300,73 @@ class DadosCadastroState extends State<DadosCadastro> {
                                     ],
                                   ),
                                 ),
-//                            Padding(
-//                              padding: const EdgeInsets.only(
-//                                  left: 20.0, right: 20.0, bottom: 10.0),
-//                              child: Column(
-//                                children: <Widget>[
-//                                  Row(
-//                                    children: <Widget>[
-//                                      Icon(
-//                                        Icons.assignment_ind,
-//                                        color: Colors.grey[400],
-//                                        size: 19.0,
-//                                      ),
-//                                      SizedBox(
-//                                        width: 10.0,
-//                                      ),
-//                                      Text(
-//                                        'RG',
-//                                        style:
-//                                            TextStyle(color: Colors.grey[500]),
-//                                      ),
-//                                    ],
-//                                  ),
-//                                  TextFormField(
-//                                    key: _rgKey,
-//                                    validator: composeValidators(
-//                                        'rg', [requiredValidator, rgValidator]),
-//                                    onSaved: (value) => _loginData.rg = value,
-//                                    decoration: InputDecoration(hintText: ' '),
-//                                  ),
-//                                ],
-//                              ),
-//                            ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20.0, bottom: 10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.perm_identity,
+                                            color: Colors.grey[400],
+                                            size: 19.0,
+                                          ),
+                                          SizedBox(
+                                            width: 10.0,
+                                          ),
+                                          Text(
+                                            'Complemento Razão Social',
+                                            style:
+                                            TextStyle(color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                      TextFormField(
+                                        key: _complRKey,
+                                        validator: composeValidators('o Complemento',
+                                            [stringValidator]),
+                                        onSaved: (value) => _loginData.complR = value,
+                                        decoration: InputDecoration(hintText: ' '),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20.0, bottom: 10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.perm_identity,
+                                            color: Colors.grey[400],
+                                            size: 19.0,
+                                          ),
+                                          SizedBox(
+                                            width: 10.0,
+                                          ),
+                                          Text(
+                                            'Nome Fantasia',
+                                            style:
+                                            TextStyle(color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                      TextFormField(
+                                        key: _nomeFantasiaKey,
+                                        validator: composeValidators('o Nome Fantasia',
+                                            [requiredValidator, stringValidator]),
+                                        onSaved: (value) => _loginData.nomeFantasia = value,
+                                        decoration: InputDecoration(hintText: ' '),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 20.0, right: 20.0, bottom: 10.0),
@@ -324,17 +383,116 @@ class DadosCadastroState extends State<DadosCadastro> {
                                             width: 10.0,
                                           ),
                                           Text(
-                                            'CPF',
+                                            'CNPJ',
                                             style:
                                             TextStyle(color: Colors.grey[500]),
                                           ),
                                         ],
                                       ),
                                       TextFormField(
-                                        key: _cpfKey,
-                                        validator: composeValidators('cpf',
-                                            [requiredValidator, cpfValidator]),
-                                        onSaved: (value) => _loginData.cpf = value,
+                                        key: _cnpjKey,
+                                        validator: composeValidators('o CNPJ',
+                                            [requiredValidator, cnpjValidator]),
+                                        onSaved: (value) => _loginData.cnpj = value,
+                                        decoration: InputDecoration(hintText: ' '),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20.0, bottom: 10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.assignment_ind,
+                                            color: Colors.grey[400],
+                                            size: 19.0,
+                                          ),
+                                          SizedBox(
+                                            width: 10.0,
+                                          ),
+                                          Text(
+                                            'Inscrição Estadual',
+                                            style:
+                                            TextStyle(color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                      TextFormField(
+                                        key: _ieKey,
+                                        validator: composeValidators(
+                                            'a Inscrição Estadual', [ieValidator]),
+                                        onSaved: (value) => _loginData.ie = value,
+                                        decoration: InputDecoration(hintText: ' '),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20.0, bottom: 10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.assignment_ind,
+                                            color: Colors.grey[400],
+                                            size: 19.0,
+                                          ),
+                                          SizedBox(
+                                            width: 10.0,
+                                          ),
+                                          Text(
+                                            'Inscrição Municipal',
+                                            style:
+                                            TextStyle(color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                      TextFormField(
+                                        key: _imKey,
+                                        validator: composeValidators(
+                                            'a Inscrição Municipal', [imValidator]),
+                                        onSaved: (value) => _loginData.im = value,
+                                        decoration: InputDecoration(hintText: ' '),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0, right: 20.0, bottom: 10.0),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.assignment_ind,
+                                            color: Colors.grey[400],
+                                            size: 19.0,
+                                          ),
+                                          SizedBox(
+                                            width: 10.0,
+                                          ),
+                                          Text(
+                                            'N. de Funcionários',
+                                            style:
+                                            TextStyle(color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                      TextFormField(
+                                        key: _numFuncKey,
+                                        validator: composeValidators(
+                                            'o número de funcionários', [numFuncValidator]),
+                                        onSaved: (value) => _loginData.numFunc = value,
                                         decoration: InputDecoration(hintText: ' '),
                                       ),
                                     ],
@@ -976,7 +1134,8 @@ class DadosCadastroState extends State<DadosCadastro> {
                           cidade.id = idCity;
                           estado.id = idState;
                           user.nome = _loginData.nome;
-                          user.cpf = _loginData.cpf;
+                          user.complR = _loginData.complR;
+                          user.cnpj = _loginData.cnpj;
                           user.endereco = _loginData.endereco;
                           user.complemento = _loginData.complemento; //_loginData.complemento;
                           user.bairro = _loginData.bairro; //_loginData.bairro;
@@ -1037,9 +1196,9 @@ class DadosCadastroState extends State<DadosCadastro> {
                         borderRadius: BorderRadius.circular(15.0),
                         gradient: LinearGradient(
                           colors: <Color>[
-                            Colors.yellow[800],
-                            Colors.yellow[700],
-                            Colors.yellow[600],
+                            Colors.blue[800],
+                            Colors.blue[600],
+                            Colors.blue[400],
                           ],
                         ),
                       ),

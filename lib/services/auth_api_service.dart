@@ -1,4 +1,4 @@
-import 'package:ett_app/models/forms.dart';
+import 'package:terceiros_app/models/forms.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:io' show Platform;

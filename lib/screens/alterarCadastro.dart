@@ -1,33 +1,35 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ett_app/screens/login.dart';
-import 'package:ett_app/domains/Estado.dart';
-import 'package:ett_app/domains/Perfil.dart';
-import 'package:ett_app/domains/Usuario.dart';
-import 'package:ett_app/domains/Cidade.dart';
-import 'package:ett_app/models/forms.dart';
-import 'package:ett_app/screens/termosDeUso.dart';
-import 'package:ett_app/utils/validators.dart';
+import 'package:terceiros_app/screens/login.dart';
+import 'package:terceiros_app/domains/estado.dart';
+import 'package:terceiros_app/domains/perfil.dart';
+import 'package:terceiros_app/domains/usuario.dart';
+import 'package:terceiros_app/domains/cidade.dart';
+import 'package:terceiros_app/models/forms.dart';
+import 'package:terceiros_app/screens/termosDeUso.dart';
+import 'package:terceiros_app/utils/validators.dart';
 import 'package:http/http.dart' as http;
 
 class AlterarCadastro extends StatefulWidget {
   Usuario user;
+  Token token;
 
   AlterarCadastro(
       {Key key,
         // this.value,
-        this.user})
+        this.user, this.token})
       : super(key: key);
 
 
   @override
-  AlterarCadastroState createState() => new AlterarCadastroState(user: user);
+  AlterarCadastroState createState() => new AlterarCadastroState(user: user,token: token);
 }
 
 class AlterarCadastroState extends State<AlterarCadastro> {
   Usuario user;
-  AlterarCadastroState({this.user});
+  Token token;
+  AlterarCadastroState({this.user, this.token});
 
   int idCity;
   int idState;
@@ -102,7 +104,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
   }
 
   Future<String> _getDropDownCidade() async {
-    var res = await http.get('https://www.accio.com.br:447/api/cadastros/cidades/status/ATIVO/?access_token=d16e3966-eb87-4337-bfee-bee54b5a4052');
+    var res = await http.get('https://www.accio.com.br:447/api/cadastros/cidades/status/ATIVO/?access_token=' + token.access_token.toString());
     print(res.body);
     return res.body;
   }
@@ -124,7 +126,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
   }
 
   Future<String> _getDropDownEstado() async {
-    var res = await http.get('https://www.accio.com.br:447/api/cadastros/estados/status/ATIVO/?access_token=d16e3966-eb87-4337-bfee-bee54b5a4052');
+    var res = await http.get('https://www.accio.com.br:447/api/cadastros/estados/status/ATIVO/?access_token=' + token.access_token.toString());
     print(res.body);
     return res.body;
   }
@@ -229,7 +231,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Image(
-                                          image: AssetImage('images/PECLogo.png'),
+                                          image: AssetImage('images/AccioLogo.png'),
                                         ),
                                       ],
                                     ),
@@ -245,7 +247,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                           textAlign: TextAlign.start,
                                           style: TextStyle(
                                               fontSize: 22.0,
-                                              color: Colors.green,
+                                              color: Colors.grey[800],
                                               fontFamily: "Poppins-Bold",
                                               letterSpacing: .6)),
                                     ],
@@ -282,6 +284,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                         validator: composeValidators('nome',
                                             [requiredValidator, stringValidator]),
                                         onSaved: (value) => _loginData.nome = value,
+                                        onChanged: (value) => _loginData.nome = value,
 //                                        decoration: InputDecoration(hintText: '${user.nome}'),
                                       ),
                                     ],
@@ -346,6 +349,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                         validator: composeValidators('cpf',
                                             [requiredValidator, cpfValidator]),
                                         onSaved: (value) => _loginData.cpf = value,
+                                        onChanged: (value) => _loginData.cpf = value,
                                         controller: TextEditingController(text: '${user.cpf}'),
                                       ),
                                     ],
@@ -416,6 +420,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                         ]),
                                         onSaved: (value) =>
                                         _loginData.endereco = value,
+                                        onChanged: (value) => _loginData.endereco = value,
                                         controller: TextEditingController(text: '${user.endereco}'),
                                       ),
                                     ],
@@ -450,6 +455,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                         ]),
                                         onSaved: (value) =>
                                         _loginData.complemento = value,
+                                        onChanged: (value) => _loginData.complemento = value,
                                         controller: TextEditingController(text: '${user.complemento}'),
                                       ),
                                     ],
@@ -484,6 +490,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                         ]),
                                         onSaved: (value) =>
                                         _loginData.bairro = value,
+                                        onChanged: (value) => _loginData.bairro = value,
                                         controller: TextEditingController(text: '${user.bairro}'),
                                       ),
                                     ],
@@ -692,6 +699,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                           cepValidator
                                         ]),
                                         onSaved: (value) => _loginData.cep = value,
+                                        onChanged: (value) => _loginData.cep = value,
                                         controller: TextEditingController(text: '${user.cep}'),
                                       ),
                                     ],
@@ -728,6 +736,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                                         ]),
                                         onSaved: (value) =>
                                         _loginData.telefone = value,
+                                        onChanged: (value) => _loginData.telefone = value,
                                         controller: TextEditingController(text:  '${user.contato}'),
                                       ),
                                     ],
@@ -768,7 +777,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
 
                                         onSaved: (value) =>
                                         _loginData.email = value,
-
+                                        onChanged: (value) => _loginData.email = value,
 
 //                                        decoration: InputDecoration(
 //                                          // border: OutlineInputBorder(
@@ -816,22 +825,31 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                           Cidade cidade = new Cidade.vazio();
                           Estado estado = new Estado.vazio();
 //                          perfil.id = 2;
-//                          print(idCity);
-//                          print(idState);
-                          cidade.id = idCity;
-                          estado.id = idState;
+                          print(idCity);
+                          print(idState);
+                          if(idCity != null) {
+                            cidade.id = idCity;
+                            cidade.nome = _selectedFieldCidade;
+                            user.cidade = cidade;
+                          }
+
+                          if(idState != null) {
+                            estado.id = idState;
+                            estado.nome = _selectedFieldEstado;
+                            user.estado = estado;
+                          }
                           user.nome = _loginData.nome;
                           user.cpf = _loginData.cpf;
                           user.endereco = _loginData.endereco;
                           user.complemento = _loginData.complemento; //_loginData.complemento;
                           user.bairro = _loginData.bairro; //_loginData.bairro;
-                          cidade.nome = _loginData.cidade;
-                          user.cidade = cidade;
-                          estado.nome = _loginData.estado; //_loginData.estado
-                          user.estado = estado;
+
+
+
                           user.cep = _loginData.cep;
                           user.contato = _loginData.telefone;
                           user.email = _loginData.email;
+
 //                          user.observacao = "";
 //                          user.perfil = perfil;
 //                          user.status = 'ATIVO';
@@ -845,7 +863,7 @@ class AlterarCadastroState extends State<AlterarCadastro> {
 
 
                           http
-                              .post(url,
+                              .put(url,
                               headers: {
                                 'Content-Type':
                                 'application/json'
@@ -882,9 +900,9 @@ class AlterarCadastroState extends State<AlterarCadastro> {
                         borderRadius: BorderRadius.circular(15.0),
                         gradient: LinearGradient(
                           colors: <Color>[
-                            Color(0xFF33691E),
-                            Color(0xFF689F38),
-                            Color(0xFF8BC34A),
+                            Colors.blue[800],
+                            Colors.blue[600],
+                            Colors.blue[400],
                           ],
                         ),
                       ),

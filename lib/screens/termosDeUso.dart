@@ -1,5 +1,5 @@
-import 'package:ett_app/screens/teste.dart';
 import 'package:flutter/material.dart';
+import 'package:terceiros_app/screens/teste.dart';
 
 class TermosDeUso extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class TermosDeUso extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Image(
-                        image: AssetImage('images/PECLogo.png'),
+                        image: AssetImage('images/AccioLogo.png'),
                       ),
                     ],
                   ),
@@ -51,7 +51,7 @@ class TermosDeUso extends StatelessWidget {
                     textAlign: TextAlign.start,
                     style: TextStyle(
                         fontSize: 22.0,
-                        color: Colors.green,
+                        color: Colors.grey[800],
                         fontFamily: "Poppins-Bold",
                         letterSpacing: .6)),
               ],

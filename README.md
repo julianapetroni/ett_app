@@ -1,6 +1,6 @@
-# ett_app
+# terceiros_app
 
-A new Flutter application.
+Gestão de terceiros
 
 ## Getting Started
 

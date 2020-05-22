@@ -3,8 +3,12 @@ class LoginFormData {
   String password = '';
   String confirmPassword = '';
   String nome = '';
+  String nomeFantasia = '';
+  String complR = '';
   String rg = '';
   String cpf = '';
+  String cnpj = '';
+  String numFunc = '';
   String telefone = '';
   String cep = '';
   String endereco = '';
@@ -12,15 +16,8 @@ class LoginFormData {
   String complemento = '';
   String bairro = '';
   String estado = '';
-  String foraDeServico = '';
-  String data = '';
-  String hora = '';
-  String veiculo = '';
-  String chapa = '';
-  String local = '';
-  String descricao = '';
-  String mensagem = '';
-
+  String ie = '';
+  String im = '';
 
 
   Map<String, dynamic> toJSON() => {
@@ -28,8 +25,12 @@ class LoginFormData {
         'password': password,
         'confirmPassword': confirmPassword,
         'nome': nome,
+        'nomeFantasia': nomeFantasia,
+        'complR': complR,
         'rg': rg,
         'cpf': cpf,
+        'cnpj': cnpj,
+        'numFunc': numFunc,
         'telefone': telefone,
         'cep': cep,
         'endereco': endereco,
@@ -37,13 +38,7 @@ class LoginFormData {
         'complemento': complemento,
         'bairro': bairro,
         'estado': estado,
-        'foraDeServico': foraDeServico,
-        'data': data,
-        'hora': hora,
-        'veiculo': veiculo,
-        'chapa': chapa,
-        'local': local,
-        'descricao': descricao,
-        'mensagem': mensagem,
+        'ie': ie,
+        'im': im,
       };
 }

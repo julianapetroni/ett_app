@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:pec_login/screens/agendarData.dart';
-//import 'package:pec_login/screens/fotosDosDocs.dart';
-//import 'package:pec_login/screens/iniciarSolicitacao.dart';
-import 'package:ett_app/screens/login.dart';
-//import 'package:pec_login/screens/novaSenha.dart';
-//import 'package:pec_login/screens/selecionarInstituicao.dart';
-//import 'package:pec_login/screens/status.dart';
-//import 'package:pec_login/screens/termosDeUso.dart';
-//import 'package:pec_login/screens/dadosCadastro.dart';
-//import 'package:pec_login/screens/docsNecessarios.dart';
+import 'package:terceiros_app/screens/agendarData.dart';
+import 'package:terceiros_app/screens/fotosDosDocs.dart';
+import 'package:terceiros_app/screens/iniciarSolicitacao.dart';
+import 'package:terceiros_app/screens/login.dart';
+import 'package:terceiros_app/screens/novaSenha.dart';
+import 'package:terceiros_app/screens/selecionarInstituicao.dart';
+import 'package:terceiros_app/screens/status.dart';
+import 'package:terceiros_app/screens/termosDeUso.dart';
+import 'package:terceiros_app/screens/dadosCadastro.dart';
+import 'package:terceiros_app/screens/docsNecessarios.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 //“lock” the device orientation and not allow it to change as the user rotates their phone
@@ -33,6 +33,24 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: TelaLogin(),
+//      routes: {
+//        //telas
+//        '/agendarData': (context) => AgendarData(), //agendarData.dart
+//
+//        '/dadosCadastro': (context) => DadosCadastro(), // dadosCadastro.dart
+//        '/documentos': (context) => Documentos(), //documentosNecessarios.dart
+//        //orientacoesFotosDocs.dart
+//        '/iniciarSolicitacao': (context) =>
+//            IniciarSolicitacao(), //iniciarSolicitacao.dart
+//        '/login': (context) => TelaLogin(), //login.dart
+//        '/novaSenha': (context) => NovaSenha(), //novaSenha.dart
+//        '/termosDeUso': (context) => TermosDeUso(), //termosDeUso.dart
+//        '/tirarFotosDocs': (context) => TirarFotosDocs(), //fotosDosDocs.dart
+//        '/status': (context) => Status(), //status.dart
+//        '/statusFinal': (context) => StatusFinal(), //status.dart
+//
+//        //'/selecionarInstituicao': (context) => SelecionarInstituicao(),
+//      },
     );
   }
 }

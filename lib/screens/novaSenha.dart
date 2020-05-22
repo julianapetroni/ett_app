@@ -1,10 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:ett_app/models/forms.dart';
-import 'package:ett_app/screens/sizeConfig.dart';
-import 'package:ett_app/screens/status.dart';
-import 'package:ett_app/utils/validators.dart';
+import 'dart:convert';
 
-import 'package:ett_app/domains/Usuario.dart';
+import 'package:flutter/material.dart';
+import 'package:terceiros_app/domains/usuario.dart';
+import 'package:terceiros_app/models/forms.dart';
+import 'package:terceiros_app/screens/sizeConfig.dart';
+import 'package:terceiros_app/screens/status.dart';
+import 'package:terceiros_app/utils/validators.dart';
+import 'package:http/http.dart' as http;
+
+import 'login.dart';
+
+
 
 class NovaSenha extends StatefulWidget {
 
@@ -115,7 +121,7 @@ class NovaSenhaState extends State<NovaSenha> {
         Container(
           width: SizeConfig.safeBlockVertical * 30,
           child: Image(
-                image: AssetImage('images/PECLogo.png'),
+                image: AssetImage('images/AccioLogo.png'),
           ),
         ),
       ],
@@ -161,7 +167,7 @@ class NovaSenhaState extends State<NovaSenha> {
                                 child: Text("Digite a sua nova senha:",
                                     style: TextStyle(
                                         fontSize: 22.0,
-                                        color: Colors.green,
+                                        color: Colors.grey[800],
                                         fontFamily: "Poppins-Bold",
                                         letterSpacing: .6)),
                               ),
@@ -283,23 +289,50 @@ class NovaSenhaState extends State<NovaSenha> {
 
                       if (_formKey.currentState.validate()) {
                         // If the form is valid, display a Snackbar.
-                        final snackBar = new SnackBar(
-                            content: new Text('Verifique a sua senha!'));
-                        _scaffoldKey.currentState.showSnackBar(snackBar);
+
                         if (_passwordController.text !=
                             _confirmPasswordController.text) {
-                          Text('Verifique a sua senha');
+                          final snackBar = new SnackBar(
+                              content: new Text('Verifique a sua senha!'));
+                          _scaffoldKey.currentState.showSnackBar(snackBar);
                         } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Status()),
-                          );
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (context) => Status()),
-                                  (Route<dynamic> route) => false);
 
-                          print(Text(_passwordController.text));
-                          print(Text(_confirmPasswordController.text));
+                          
+                          print(user.email.toString());
+                          print(_passwordController.text);
+                          user.senha = _passwordController.text.toString();
+                          Map<String, dynamic> map = user.toJson();
+                          String body = jsonEncode(map);
+                          String url = 'https://www.accio.com.br:447/api/senhas/save/password';
+
+                          http
+                              .put(url,
+                          headers: {
+                      //                      'Content-Type':
+                      //                      'application/x-www-form-urlencoded; charset=utf-8',
+                          'Content-Type':
+                          'application/json',
+                          },
+                          body: body)
+                              .then((http.Response res) {
+
+                              print("Response status: ${res.statusCode}");
+                              print(res.headers);
+
+                              print(res.body);
+                              if (res.statusCode == 200) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => TelaLogin()),
+                                );
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(builder: (context) => TelaLogin()),
+                                        (Route<dynamic> route) => false);
+
+                                print(Text(_passwordController.text));
+                                print(Text(_confirmPasswordController.text));
+                              }
+                          });
                         }
                       }
                     },
@@ -312,9 +345,9 @@ class NovaSenhaState extends State<NovaSenha> {
                         borderRadius: BorderRadius.circular(15.0),
                         gradient: LinearGradient(
                           colors: <Color>[
-                            Color(0xFF33691E),
-                            Color(0xFF689F38),
-                            Color(0xFF8BC34A),
+                            Colors.grey[800],
+                            Colors.grey[600],
+                            Colors.grey[400],
                           ],
                         ),
                       ),
